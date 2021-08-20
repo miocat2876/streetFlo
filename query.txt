@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.streetflo.miocat.dao.rest.CalenderMapper">
+
+    <select id="scheduleFind" parameterType="CalenderDto" resultType="ScheduleDto">
+
+        SELECT SEQ
+             , MEMBER_SEQ
+             , CONTENT
+             , SCHEDULE
+             , DISTINCTION
+          FROM SCHEDULE <!-- state 신규추가 해야함 -->
+         WHERE MEMBER_SEQ = #{memberSeq}
+           AND STATE = #{state} 
+           AND TO_CHAR(SCHEDULE,'MM') BETWEEN #{startMonth} AND #{endMonth}
+
+    </select>
+    
+    
+    <insert id="" parameterType="">
+    	INSERT 
+    	  INTO 
+      SCHEDULE(SEQ
+             , MEMBER_SEQ
+             , CONTENT
+             , SCHEDULE
+             , DISTINCTION
+ 	         )
+    	VALUES(#{seq}
+    		 , #{memberSeq}
+    		 , #{content}
+    		 , #{schedule}
+    		 , #{distinction}
+    		 )
+    </insert>
+    
+    <delete id="">
+    	UPDATE SCHEDULE
+    	   SET STATE = #{state}
+    </delete>
+    
+    
+    <select id="scheduleSubscribeFind">
+    
+    	SELECT SEQ <!-- 없애야하는 컬럼 -->
+    	     , MEMBER_SEQ
+    	     , SCHEDULE_SEQ
+    	     <!-- 첫구독일자 구독일자 구독상태 추가 컬럼 -->
+    	  FROM SCHEDULE_SUBSCRIBE
+    	 WHERE MEMBER_SEQ = #{memberSeq}
+    
+    </select>
+    
+    
+    <insert id="scheduleSubscribeUpdate">
+    
+    	MERGE INTO SCHEDULE_SUBSCRIBE SS
+    	     USING DUAL
+    	        ON(MEMBER_SEQ = #{meberSeq} 
+    	       AND SCHEDULE_SEQ = #{scheduleSeq}
+    	          )
+ 			  WHEN MATCHED THEN
+	       UPDATE SET STATE = 'Y' <!-- 구독상태 추가 컬럼 -->
+			  WHEN NOT MATCHED THEN
+       		INSERT(MEMBER_SEQ
+       		     , SCHEDULE_SEQ
+       		     <!-- 첫구독일자 구독일자 구독상태 추가 컬럼 -->
+       		     )	          
+       	   VALUES(#{memberSeq}
+       	        , #{scheduleSeq}
+       	        <!-- 첫구독일자 구독일자 구독상태 추가 컬럼 -->
+       	         )
+    </insert>
+    
+    
+    <delete id="scheduleSubscribeRemove">
+    	UPDATE SCHEDULE_SUBSCRIBE
+    	   SET STATE = 'N'
+    	 WHERE MEMBER_SEQ = #{meberSeq} 
+    	   AND SCHEDULE_SEQ = #{scheduleSeq}
+    </delete>
+    
+    <select id="">
+    
+    		private int seq;
+	private int memberSeq;
+	private String academyName;
+	private String addressSido;
+	private String addressDong;
+	private String addressDetail;
+	private String academyCreateDt;
+    
+    
+    </select>
+    
+    
+    <!-- https://myjamong.tistory.com/238 -->
+    
+    
+    
+
+
+</mapper>
